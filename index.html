@@ -42,6 +42,8 @@
 
         document.querySelector("#marker").addEventListener("markerFound", () => {
             let randomIndex = Math.floor(Math.random() * eggModels.length);
+            console.log('Selected egg index:', randomIndex);
+            console.log('Selected egg model:', eggModels[randomIndex]);
 
             if (randomIndex >= eggModels.length) {
                 currentEgg = "no-egg";
@@ -52,6 +54,7 @@
                 currentEgg = eggModels[randomIndex];
                 document.querySelector("#eggModel").setAttribute("src", currentEgg);
                 document.querySelector("#eggModel").setAttribute("visible", "true");
+                console.log('Egg model set to visible:', currentEgg);
                 document.querySelector("#noEggText").setAttribute("visible", "false");
                 document.querySelector("#collectBtn").disabled = false;
             }
