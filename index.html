@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easter Egg Hunt AR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js@1.7.2/aframe/build/aframe-ar.min.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #hud { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: white; padding: 10px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="hud">
+        <h2>Easter Egg Hunt</h2>
+        <p>Collected Eggs: <span id="eggCount">0</span> / 5</p>
+        <button id="collectBtn" disabled>Collect Egg</button>
+        <button id="skipBtn">Skip</button>
+        <h3 id="winnerMessage" style="color: green; display: none;">🎉 Winner! 🎉</h3>
+    </div>
+
+    <a-scene embedded arjs>
+        <a-marker preset="hiro" id="marker">
+            <a-entity id="eggModel" visible="false" position="0 0 0" scale="0.5 0.5 0.5"></a-entity>
+            <a-text id="noEggText" value="Upps, no egg here!" position="-1 0.5 0" scale="2 2 2" color="red" visible="false"></a-text>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        const eggModels = [
+            "https://raw.githubusercontent.com/yourusername/easter-egg-hunt-ar/main/egg1.obj",
+            "https://raw.githubusercontent.com/yourusername/easter-egg-hunt-ar/main/egg2.obj",
+            "https://raw.githubusercontent.com/yourusername/easter-egg-hunt-ar/main/egg3.obj",
+            "https://raw.githubusercontent.com/yourusername/easter-egg-hunt-ar/main/egg4.obj",
+            "https://raw.githubusercontent.com/yourusername/easter-egg-hunt-ar/main/egg5.obj"
+        ];
+
+        let collectedEggs = [];
+        let currentEgg = null;
+
+        document.querySelector("#marker").addEventListener("markerFound", () => {
+            let randomIndex = Math.floor(Math.random() * (eggModels.length + 1));
+
+            if (randomIndex >= eggModels.length) {
+                currentEgg = "no-egg";
+                document.querySelector("#eggModel").setAttribute("visible", "false");
+                document.querySelector("#noEggText").setAttribute("visible", "true");
+                document.querySelector("#collectBtn").disabled = true;
+            } else {
+                currentEgg = eggModels[randomIndex];
+                document.querySelector("#eggModel").setAttribute("obj-model", `url(${currentEgg})`);
+                document.querySelector("#eggModel").setAttribute("visible", "true");
+                document.querySelector("#noEggText").setAttribute("visible", "false");
+                document.querySelector("#collectBtn").disabled = false;
+            }
+        });
+
+        document.querySelector("#collectBtn").addEventListener("click", () => {
+            if (currentEgg && currentEgg !== "no-egg" && !collectedEggs.includes(currentEgg)) {
+                collectedEggs.push(currentEgg);
+                document.querySelector("#eggCount").textContent = collectedEggs.length;
+            }
+            checkWinner();
+            resetScene();
+        });
+
+        document.querySelector("#skipBtn").addEventListener("click", resetScene);
+
+        function resetScene() {
+            document.querySelector("#eggModel").setAttribute("visible", "false");
+            document.querySelector("#noEggText").setAttribute("visible", "false");
+            document.querySelector("#collectBtn").disabled = true;
+        }
+
+        function checkWinner() {
+            if (collectedEggs.length >= 5) {
+                document.querySelector("#winnerMessage").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
