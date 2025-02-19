@@ -21,7 +21,7 @@
     </div>
 
     <a-scene embedded arjs>
-       <a-marker type="pattern" url="https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/marker.patt" id="marker">
+        <a-marker type="pattern" url="https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/marker.patt" id="marker">
             <a-gltf-model id="eggModel" src="" position="0 0 0" scale="1 1 1" visible="false"></a-gltf-model>
             <a-text id="noEggText" value="Upps, no egg here!" position="-1 0.5 0" scale="2 2 2" color="red" visible="false"></a-text>
         </a-marker>
@@ -31,37 +31,33 @@
     <script>
         const eggModels = [
             "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg4.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg4.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb"
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg4.glb"
         ];
 
         let collectedEggs = [];
         let currentEgg = null;
 
         document.querySelector("#marker").addEventListener("markerFound", () => {
+            console.log("✅ Marker detected!");
             let randomIndex = Math.floor(Math.random() * eggModels.length);
-            console.log('Selected egg index:', randomIndex);
-            console.log('Selected egg model:', eggModels[randomIndex]);
+            currentEgg = eggModels[randomIndex];
 
-            if (randomIndex >= eggModels.length) {
-                currentEgg = "no-egg";
+            if (!currentEgg) {
                 document.querySelector("#eggModel").setAttribute("visible", "false");
                 document.querySelector("#noEggText").setAttribute("visible", "true");
                 document.querySelector("#collectBtn").disabled = true;
             } else {
-                currentEgg = eggModels[randomIndex];
                 document.querySelector("#eggModel").setAttribute("src", currentEgg);
                 document.querySelector("#eggModel").setAttribute("visible", "true");
-                console.log('Egg model set to visible:', currentEgg);
+                console.log("Egg model set to visible:", currentEgg);
                 document.querySelector("#noEggText").setAttribute("visible", "false");
                 document.querySelector("#collectBtn").disabled = false;
             }
         });
 
         document.querySelector("#collectBtn").addEventListener("click", () => {
-            if (currentEgg && currentEgg !== "no-egg" && !collectedEggs.includes(currentEgg)) {
+            console.log("Collect button clicked!");
+            if (currentEgg && !collectedEggs.includes(currentEgg)) {
                 collectedEggs.push(currentEgg);
                 document.querySelector("#eggCount").textContent = collectedEggs.length;
             }
@@ -69,7 +65,10 @@
             resetScene();
         });
 
-        document.querySelector("#skipBtn").addEventListener("click", resetScene);
+        document.querySelector("#skipBtn").addEventListener("click", () => {
+            console.log("Skip button clicked!");
+            resetScene();
+        });
 
         function resetScene() {
             document.querySelector("#eggModel").setAttribute("visible", "false");
