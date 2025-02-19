@@ -21,8 +21,8 @@
     </div>
 
     <a-scene embedded arjs>
-       <a-marker type="pattern" url="https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/marker.patt" id="marker">
-            <a-entity id="eggModel" visible="false" position="0 0 0" scale="0.5 0.5 0.5"></a-entity>
+       <a-marker type="pattern" url="https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/marker.patt" id="marker">
+            <a-gltf-model id="eggModel" src="" position="0 0 0" scale="1 1 1" visible="false"></a-gltf-model>
             <a-text id="noEggText" value="Upps, no egg here!" position="-1 0.5 0" scale="2 2 2" color="red" visible="false"></a-text>
         </a-marker>
         <a-entity camera></a-entity>
@@ -30,18 +30,18 @@
 
     <script>
         const eggModels = [
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/egg1.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/egg4.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/egg1.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/egg4.glb",
-            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/refs/heads/main/egg1.glb"
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb",
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg4.glb",
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb",
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg4.glb",
+            "https://raw.githubusercontent.com/loewev/easter-egg-hunt-ar/main/egg1.glb"
         ];
 
         let collectedEggs = [];
         let currentEgg = null;
 
         document.querySelector("#marker").addEventListener("markerFound", () => {
-            let randomIndex = Math.floor(Math.random() * (eggModels.length + 1));
+            let randomIndex = Math.floor(Math.random() * eggModels.length);
 
             if (randomIndex >= eggModels.length) {
                 currentEgg = "no-egg";
@@ -50,7 +50,7 @@
                 document.querySelector("#collectBtn").disabled = true;
             } else {
                 currentEgg = eggModels[randomIndex];
-                document.querySelector("#eggModel").setAttribute("obj-model", `url(${currentEgg})`);
+                document.querySelector("#eggModel").setAttribute("src", currentEgg);
                 document.querySelector("#eggModel").setAttribute("visible", "true");
                 document.querySelector("#noEggText").setAttribute("visible", "false");
                 document.querySelector("#collectBtn").disabled = false;
